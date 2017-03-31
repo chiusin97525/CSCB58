@@ -32,7 +32,7 @@ module Game_console(
 	wire [1:0] winner1, winner2, winner_out;
 	wire [17:0] led1, led2;
 	
-	
+	// New instances of games
 	pong pong_game(CLOCK2_50, CLOCK_50, KEY[3:0], SW[17],vga_r_1,vga_g_1,vga_b_1,vga_clk1, vga_blank1, vga_hs1, vga_vs1, vga_sync1, led1, score11[3:0], score21[3:0], winner1[1:0], SW[0]);
 	squash squash_game(CLOCK2_50, CLOCK_50, KEY[1:0], SW[17],vga_r_2,vga_g_2,vga_b_2,vga_clk2, vga_blank2, vga_hs2, vga_vs2, vga_sync2, led2, score22[3:0], score12[3:0], winner2[1:0], ~SW[0]);
 	
@@ -60,6 +60,8 @@ module Game_console(
 	
 endmodule
 
+
+// vga mux that controls the output location
 module vga_mux(mode, vga_in1, vga_in2, vga_out);
 	input mode;
 	input vga_in1, vga_in2;
@@ -141,14 +143,14 @@ endmodule
 // Module to output info to the seven-segement displays
 module sevenseg(seg0, seg1, seg2, seg3, seg4, seg5, seg6, seg7, score_p1, score_p2, winner, mode);
 	input [3:0] score_p1, score_p2;								
-	input [1:0] winner;												// 0 = none, 1 = P1, 2 = P2
+	input [1:0] winner;				// 0 = none, 1 = P1, 2 = P2
 	input mode;
 	output [6:0] seg0, seg1, seg2, seg3, seg4, seg5, seg6, seg7;
 	
 	reg [6:0] seg0, seg1, seg2, seg3, seg4, seg5, seg6, seg7;
 	
 	always @ (score_p1 or winner) begin
-	
+		
 		if (winner > 0) begin
 			if(mode == 0) begin
 				// Show the winner on hex7 and hex6 (i.e. P1 or P2)
@@ -202,6 +204,7 @@ module sevenseg(seg0, seg1, seg2, seg3, seg4, seg5, seg6, seg7, score_p1, score_
 			seg4 = 7'b1111111;
 		end
 		else begin
+			// display different info for the squash game
 			if(mode) begin
 				seg5 = 7'b1111111;
 				case (score_p2)
